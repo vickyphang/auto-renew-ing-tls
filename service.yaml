@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: airflow-ingress
+  namespace: airflow
+  annotations:
+    kubernetes.io/ingress.class: contour
+    cert-manager.io/cluster-issuer: letsencrypt-prod  # Use the ClusterIssuer
+spec:
+  tls:
+  - hosts:
+    - airflow.contour.rnd.test
+    secretName: airflow-tls  # Secret to store the TLS certificate
+  rules:
+  - host: airflow.contour.rnd.test
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: airflow-webserver  # Replace with your service name
+            port:
+              number: 8080  # Replace with your service port
